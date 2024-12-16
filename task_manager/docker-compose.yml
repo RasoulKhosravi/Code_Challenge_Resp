@@ -1,0 +1,38 @@
+version: "3.8"
+
+services:
+  web:
+    build: .
+    command: >
+      sh -c "python manage.py migrate --noinput && python manage.py runserver 0.0.0.0:7000"
+    volumes:
+      - .:/project
+    ports:
+      - "7000:7000"
+    depends_on:
+      - db_task_management
+    env_file:
+      - .env
+    environment:
+      - DATABASE_URL=postgres://Respina:Respina_pass@db_task_management:5432/taskmanager
+      - DEBUG=True
+    networks:
+      - taskmanager_network
+
+  db_task_management:
+    image: postgres:14
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_DB=taskmanager
+      - POSTGRES_USER=Respina
+      - POSTGRES_PASSWORD=Respina_pass
+  
+    networks:
+      - taskmanager_network
+
+networks:
+  taskmanager_network:
+
+volumes:
+  postgres_data:

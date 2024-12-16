@@ -1,0 +1,15 @@
+FROM python:3.11
+
+WORKDIR /project
+
+COPY requirements.txt /project/
+
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . /project/
+
+EXPOSE 7000
+
+ENV PYTHONUNBUFFERED=1
+
+CMD ["sh", "-c", "python manage.py migrate --noinput && python manage.py runserver 0.0.0.0:7000"]
